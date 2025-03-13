@@ -1,4 +1,4 @@
-name: Deploy App
+name: Deploy to Vercel
 
 on:
   push:
@@ -12,29 +12,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: npm install
 
-      - name: Run tests
-        run: |
-          python -m pytest
+      - name: Build project
+        run: npm run build
 
-      - name: Deploy to Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-        run: |
-          curl -s -X POST \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "autoDeploy": "yes",
-              "branch": "main"
-            }' \
-            https://api.render.com/v1/services/your-service-id/deploys
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ LW9JsNBQzaSwW1o9PMypVwF6 }}
+          vercel-org-id: ${{ team_yr9jPesbBDfFk0oexkps0XEe }}
+          vercel-project-id: ${{ prj_70pdqpLzlFJVYAUgxP9JEhifxhN1 }}

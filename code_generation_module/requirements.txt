@@ -1,1 +1,11 @@
-openai
+# Core dependencies
+transformers>=4.30.0
+torch>=2.0.0
+# Optional dependencies for better performance
+accelerate>=0.20.0
+# For tokenization
+sentencepiece>=0.1.99
+# For progress bars
+tqdm>=4.65.0
+# For regex operations in post-processing
+regex>=2022.10.31
