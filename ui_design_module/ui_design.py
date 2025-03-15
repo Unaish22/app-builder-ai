@@ -1,12 +1,6 @@
-import requests
-import os
 import json
 import random
 from datetime import datetime
-from dotenv import load_dotenv
-
-# Load environment variables from .env file (keeping this for compatibility)
-load_dotenv()
 
 # UI component templates
 UI_COMPONENTS = {
@@ -184,20 +178,37 @@ def analyze_features(features_text):
     Analyze the features text to determine what UI components to include
     
     Args:
-        features_text (str): Description of the desired features
+        features_text (str or list): Description of the desired features or list of feature dictionaries
         
     Returns:
         dict: Features analysis
     """
+    # Check if features_text is a list
+    if isinstance(features_text, list):
+        # If it's a list, we need to extract the relevant text
+        features_str = ""
+        for item in features_text:
+            if isinstance(item, dict):
+                # Extract text from each dictionary in the list
+                features_str += item.get('original_input', '') + ' '
+                features_str += item.get('generated_text', '') + ' '
+    else:
+        # If it's already a string, use it directly
+        features_str = str(features_text)
+    
+    # Now we can safely call lower() on the string
+    features_str = features_str.lower()
+    
+    # Check for features in the combined string
     features = {
-        "has_todo_list": "todo" in features_text.lower() or "to-do" in features_text.lower() or "task" in features_text.lower(),
-        "has_reminders": "remind" in features_text.lower(),
-        "has_priority": "priority" in features_text.lower(),
-        "has_categories": "categor" in features_text.lower(),
-        "has_dark_mode": "dark" in features_text.lower() or "theme" in features_text.lower(),
-        "has_search": "search" in features_text.lower(),
-        "has_filter": "filter" in features_text.lower(),
-        "has_sort": "sort" in features_text.lower(),
+        "has_todo_list": "todo" in features_str or "to-do" in features_str or "task" in features_str,
+        "has_reminders": "remind" in features_str,
+        "has_priority": "priority" in features_str,
+        "has_categories": "categor" in features_str,
+        "has_dark_mode": "dark" in features_str or "theme" in features_str,
+        "has_search": "search" in features_str,
+        "has_filter": "filter" in features_str,
+        "has_sort": "sort" in features_str,
     }
     
     return features
@@ -207,7 +218,7 @@ def generate_ui_layout(features_text):
     Generate a UI layout based on the features text
     
     Args:
-        features_text (str): Description of the desired features
+        features_text (str or list): Description of the desired features or list of feature dictionaries
         
     Returns:
         dict: UI layout data
